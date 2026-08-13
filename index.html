@@ -277,6 +277,20 @@ header{
 
 .mystery .mc-name{color:var(--ink-mid)}
 
+.plate{
+  margin-top:16px;
+  overflow:hidden;
+  border-radius:2px;
+  background:rgba(42,33,24,0.08);
+}
+
+.plate img{
+  display:block;
+  width:100%;
+  aspect-ratio:4/3;
+  object-fit:cover;
+}
+
 .clue-zone{margin-top:18px}
 
 .clue-sep{
@@ -730,11 +744,11 @@ button:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid var(-
   <div class="mode-sub">Three courses. Three starred kitchens. How will you dine?</div>
   <button class="mode-card" id="pickNormal">
     <div class="mode-name">prix fixe</div>
-    <div class="mode-desc">The kitchen sets the menu. See the restaurant, then choose its signature dish from four plates. Three clues, three guesses per course.</div>
+    <div class="mode-desc">The kitchen sets the menu. See the restaurant and a photograph of its plate, then choose the signature dish from four options. Three guesses per course.</div>
   </button>
   <button class="mode-card" id="pickHard">
     <div class="mode-name">&agrave; la carte</div>
-    <div class="mode-desc">No menu, no names. Clues arrive one by one and you must call both the dish and the house it belongs to. Six clues, six guesses per course.</div>
+    <div class="mode-desc">No menu, no names. From the photograph alone, call both the dish and the house it belongs to. Six guesses per course.</div>
   </button>
   <div class="mode-note">your choice is set for the whole service</div>
 </section>
@@ -753,12 +767,11 @@ button:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid var(-
   <div class="modal">
     <button class="modal-close" data-close="helpOverlay" aria-label="close">&times;</button>
     <h2>How to play</h2>
-    <p>Every day the kitchen serves <b>three courses</b>: three real restaurants holding two or three Michelin stars. Your job is to name each one's <b>signature dish</b>.</p>
-    <p>Clues are revealed like courses on a menu. Every wrong guess sends out the next clue. Solve each course in as few guesses as you can.</p>
+    <p>Every day the kitchen serves <b>three courses</b>: three real restaurants holding two or three Michelin stars. Each course is a <b>photograph of a plate</b>. Your job is to name the signature dish on it.</p>
     <div class="mode-name">prix fixe</div>
-    <p>You are shown the restaurant. Choose its signature dish from <b>four plates</b>. Three clues, three guesses.</p>
+    <p>You are shown the restaurant and the photograph. Choose the signature dish from <b>four options</b>. Three guesses.</p>
     <div class="mode-name">&agrave; la carte</div>
-    <p>The restaurant is hidden. Using up to <b>six clues</b>, search the full carte and call both the dish and the house. Wrong guesses tell you whether you matched the country, the course, and the stars.</p>
+    <p>Only the photograph is served. Search the full carte and call both <b>the dish and the house</b> in six guesses. Misses reveal the house's cuisine, country, and city along the way, and tell you whether you matched the country, the course, and the stars.</p>
     <p>Your mode is locked once the first course begins. A new service starts at midnight EST.</p>
   </div>
 </div>
@@ -876,6 +889,28 @@ function hardClues(r){
   ];
 }
 
+function structClues(r){
+  return [
+    {tag:'the house',text:'A '+r.cuisine.toLowerCase()+' kitchen holding '+starWord(r.stars)+'.'},
+    {tag:'the region',text:'You are dining in '+r.country+'.'},
+    {tag:'the address',text:'The house stands in '+r.city+'.'}
+  ];
+}
+
+function structVisible(g){
+  if(g>=6) return 3;
+  if(g>=4) return 2;
+  if(g>=2) return 1;
+  return 0;
+}
+
+const IMG_FAIL={};
+
+function imgFail(id){
+  IMG_FAIL[id]=1;
+  renderRound();
+}
+
 function starsSvg(n,size,dim){
   let s='';
   for(let i=0;i<n;i++){
@@ -960,8 +995,7 @@ function renderRound(){
   const r=currentRest();
   const st=day.rounds[activeRound];
   const hard=day.mode==='hard';
-  const clues=hard?hardClues(r):normalClues(r);
-  const shown=Math.min(st.guesses.length+1,clues.length);
+  const hasImg=!IMG_FAIL[r.id];
   let html='';
   html+='<div class="menu-card'+(hard&&!st.done?' mystery':'')+'">';
   if(hard&&!st.done){
@@ -976,13 +1010,29 @@ function renderRound(){
     html+='<div class="mc-loc">'+r.city+' &middot; '+r.country+'</div>';
     html+='<div class="mc-chef">'+r.chef+' &middot; '+r.cuisine+'</div>';
   }
-  html+='<div class="clue-zone">';
-  const showCount=st.done?clues.length:shown;
-  for(let i=0;i<showCount;i++){
-    html+='<div class="clue-sep">&middot;&nbsp;&middot;&nbsp;&middot;</div>';
-    html+='<div class="clue-line"><span class="clue-tag">'+clues[i].tag+'</span>'+clues[i].text+'</div>';
+  if(hasImg){
+    html+='<div class="plate"><img src="images/'+r.id+'.jpg" alt="photograph of the plate" onerror="imgFail('+r.id+')"></div>';
+    if(hard){
+      const sc=structClues(r);
+      const vis=st.done?sc.length:structVisible(st.guesses.length+1);
+      html+='<div class="clue-zone">';
+      for(let i=0;i<vis;i++){
+        html+='<div class="clue-sep">&middot;&nbsp;&middot;&nbsp;&middot;</div>';
+        html+='<div class="clue-line"><span class="clue-tag">'+sc[i].tag+'</span>'+sc[i].text+'</div>';
+      }
+      html+='</div>';
+    }
+  }else{
+    const clues=hard?hardClues(r):normalClues(r);
+    const showCount=st.done?clues.length:Math.min(st.guesses.length+1,clues.length);
+    html+='<div class="clue-zone">';
+    for(let i=0;i<showCount;i++){
+      html+='<div class="clue-sep">&middot;&nbsp;&middot;&nbsp;&middot;</div>';
+      html+='<div class="clue-line"><span class="clue-tag">'+clues[i].tag+'</span>'+clues[i].text+'</div>';
+    }
+    html+='</div>';
   }
-  html+='</div></div>';
+  html+='</div>';
   if(!st.done){
     html+='<div class="guess-zone">';
     if(hard){

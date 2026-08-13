@@ -11,13 +11,14 @@ Static site -- zero backend, zero build step. Two JS data files + one HTML file.
 | index.html | Game UI, styles, all game logic inline |
 | restaurants.js | Restaurant bank: name, location, stars, chef, cuisine, fame tier, signature dish, course bucket, three graded dish clues |
 | schedule.js | Date-to-restaurant-ID mapping, three IDs per day (one per fame tier) |
+| images/{id}.jpg | Photograph of each signature dish, keyed by restaurant ID. The primary hint. |
 
 ## Game Modes
 
 | Mode | Description |
 |------|-------------|
-| prix fixe | Restaurant shown. Pick its signature dish from 4 options. 3 clues, 3 guesses. |
-| a la carte | Restaurant hidden. Search a dropdown of every dish + restaurant pair. 6 clues, 6 guesses. Wrong guesses show country / course / stars match chips. |
+| prix fixe | Restaurant and plate photo shown. Pick the signature dish from 4 options. 3 guesses. |
+| a la carte | Restaurant hidden, only the plate photo shown. Search a dropdown of every dish + restaurant pair. 6 guesses. Misses reveal cuisine + stars, then country, then city, and show country / course / stars match chips. |
 
 Mode is chosen once per day and locked for all three rounds.
 
@@ -55,11 +56,13 @@ A day counts as won when at least 2 of 3 rounds are solved. Streak requires cons
 
 `course` is one of: seafood, meat, poultry, vegetable, dessert, soup, pasta-rice, egg-caviar. Multiple-choice decoys are drawn from the same course bucket, seeded by date + restaurant ID so every player sees the same four options.
 
-## Clue Order
+## Hint Structure
 
-prix fixe: dishClue1, dishClue2, dishClue3.
+The plate photograph is the hint. It is always shown sharp, never obscured.
 
-a la carte: dishClue1, cuisine + stars, dishClue2, country, dishClue3, city. Chef is never given as a clue.
+a la carte additionally reveals house identity lines on misses: cuisine + stars after 1 miss, country after 3, city after 5. Chef is never given as a clue.
+
+If an image is missing or fails to load, the game falls back to text clues: prix fixe uses dishClue1-3 revealed per miss; a la carte interleaves dish clues with house lines across 6 reveals. dishClue3 also serves as the description on every reveal card, so all three clues stay required fields.
 
 ## Scheduling
 
