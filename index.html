@@ -1,0 +1,1242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>michelindle</title>
+<meta name="description" content="Daily fine dining puzzle. Guess the signature dishes of two and three star Michelin restaurants.">
+<meta property="og:title" content="michelindle">
+<meta property="og:description" content="Daily fine dining puzzle. Guess the signature dishes of two and three star Michelin restaurants.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://lkranz.com/michelindle">
+<meta property="og:image" content="https://lkranz.com/michelindle/michelindle.png">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="michelindle">
+<meta name="twitter:description" content="Daily fine dining puzzle. Guess the signature dishes of two and three star Michelin restaurants.">
+<meta name="twitter:image" content="https://lkranz.com/michelindle/michelindle.png">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Lora:ital,wght@0,400;0,500;1,400;1,500&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+
+:root{
+  --bg:#2a0a0f;
+  --bg-deep:#20070b;
+  --line:#4a1d21;
+  --line-soft:#3c1418;
+  --card:#f5eedf;
+  --card-edge:#e0d4bc;
+  --ink:#2a2118;
+  --ink-mid:#6b5f4e;
+  --ink-faint:#9b8d76;
+  --gold:#c9a22e;
+  --gold-bright:#e0b93f;
+  --gold-soft:rgba(201,162,46,0.16);
+  --cream:#f0e5d2;
+  --cream-mid:#c4a996;
+  --cream-faint:#8a6a5d;
+  --right:#4e7d5b;
+  --right-soft:rgba(78,125,91,0.16);
+  --wrong:#b03a34;
+  --wrong-soft:rgba(176,58,52,0.14);
+}
+
+html{font-size:15px}
+
+body{
+  background:var(--bg);
+  background-image:radial-gradient(ellipse 90% 60% at 50% -10%,rgba(201,162,46,0.07),transparent 60%);
+  color:var(--cream);
+  font-family:'Lora',serif;
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+}
+
+.wrap{
+  max-width:560px;
+  margin:0 auto;
+  padding:0 22px 90px;
+}
+
+header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:30px 0 14px;
+}
+
+.wordmark{
+  font-family:'Cormorant Garamond',serif;
+  font-weight:600;
+  font-size:2rem;
+  letter-spacing:0.02em;
+  color:var(--cream);
+  display:flex;
+  align-items:baseline;
+  gap:10px;
+}
+
+.wordmark .stars{transform:translateY(-2px)}
+
+.hbtns{display:flex;gap:8px}
+
+.icon-btn{
+  background:none;
+  border:1px solid var(--line);
+  color:var(--cream-mid);
+  width:34px;
+  height:34px;
+  border-radius:50%;
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.05rem;
+  font-weight:600;
+  cursor:pointer;
+  transition:border-color 0.15s,color 0.15s;
+}
+
+.icon-btn:hover{border-color:var(--gold);color:var(--gold)}
+
+.rule{
+  border:none;
+  border-top:1px solid var(--line);
+  position:relative;
+  overflow:visible;
+  margin:0 0 22px;
+}
+
+.rule::after{
+  content:"";
+  position:absolute;
+  left:50%;
+  top:-4px;
+  transform:translateX(-50%);
+  width:7px;
+  height:7px;
+  background:var(--gold);
+  rotate:45deg;
+}
+
+.tagline{
+  text-align:center;
+  font-family:'Montserrat',sans-serif;
+  font-size:0.62rem;
+  letter-spacing:0.32em;
+  text-transform:uppercase;
+  color:var(--cream-faint);
+  margin-bottom:26px;
+}
+
+.star{fill:var(--gold)}
+.star.dim{fill:none;stroke:var(--gold);stroke-width:60}
+
+.mode-pick{margin-top:8px}
+
+.mode-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.5rem;
+  font-weight:600;
+  text-align:center;
+  margin-bottom:6px;
+}
+
+.mode-sub{
+  text-align:center;
+  color:var(--cream-mid);
+  font-size:0.85rem;
+  margin-bottom:24px;
+  font-style:italic;
+}
+
+.mode-card{
+  width:100%;
+  text-align:left;
+  background:none;
+  border:1px solid var(--line);
+  border-radius:4px;
+  padding:18px 20px;
+  margin-bottom:14px;
+  cursor:pointer;
+  color:var(--cream);
+  transition:border-color 0.15s,background 0.15s;
+}
+
+.mode-card:hover{border-color:var(--gold);background:rgba(201,162,46,0.05)}
+
+.mode-name{
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.35rem;
+  font-weight:600;
+  font-style:italic;
+  color:var(--gold-bright);
+  margin-bottom:4px;
+}
+
+.mode-desc{font-size:0.83rem;color:var(--cream-mid);font-family:'Lora',serif;line-height:1.5}
+
+.mode-note{
+  text-align:center;
+  font-size:0.72rem;
+  color:var(--cream-faint);
+  margin-top:10px;
+  font-style:italic;
+}
+
+.tabs{
+  display:flex;
+  gap:6px;
+  margin-bottom:22px;
+}
+
+.tab{
+  flex:1;
+  background:none;
+  border:none;
+  border-top:1px solid var(--line);
+  padding:10px 2px 0;
+  cursor:pointer;
+  color:var(--cream-faint);
+  font-family:'Montserrat',sans-serif;
+  font-size:0.58rem;
+  letter-spacing:0.18em;
+  text-transform:uppercase;
+  text-align:center;
+  transition:color 0.15s,border-color 0.15s;
+}
+
+.tab .tstat{
+  display:block;
+  margin-top:4px;
+  height:14px;
+  font-family:'Cormorant Garamond',serif;
+  font-size:0.85rem;
+  letter-spacing:0;
+}
+
+.tab.active{color:var(--gold-bright);border-top-color:var(--gold)}
+.tab.done-won .tstat{color:var(--right)}
+.tab.done-lost .tstat{color:var(--wrong)}
+.tab:disabled{cursor:default;opacity:0.45}
+
+.menu-card{
+  background:var(--card);
+  color:var(--ink);
+  border-radius:3px;
+  padding:30px 26px 26px;
+  box-shadow:0 1px 0 var(--card-edge) inset,0 14px 34px rgba(0,0,0,0.4);
+  position:relative;
+}
+
+.menu-card::before{
+  content:"";
+  position:absolute;
+  inset:7px;
+  border:1px solid rgba(42,33,24,0.16);
+  border-radius:2px;
+  pointer-events:none;
+}
+
+.mc-eyebrow{
+  text-align:center;
+  font-family:'Montserrat',sans-serif;
+  font-size:0.56rem;
+  letter-spacing:0.34em;
+  text-transform:uppercase;
+  color:var(--ink-faint);
+  margin-bottom:10px;
+}
+
+.mc-stars{text-align:center;margin-bottom:8px}
+
+.mc-name{
+  text-align:center;
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.75rem;
+  font-weight:600;
+  line-height:1.1;
+  margin-bottom:6px;
+}
+
+.mc-loc{
+  text-align:center;
+  font-family:'Montserrat',sans-serif;
+  font-size:0.6rem;
+  letter-spacing:0.26em;
+  text-transform:uppercase;
+  color:var(--ink-mid);
+  margin-bottom:4px;
+}
+
+.mc-chef{
+  text-align:center;
+  font-size:0.8rem;
+  font-style:italic;
+  color:var(--ink-mid);
+}
+
+.mystery .mc-name{color:var(--ink-mid)}
+
+.clue-zone{margin-top:18px}
+
+.clue-sep{
+  text-align:center;
+  color:var(--gold);
+  font-size:0.8rem;
+  letter-spacing:0.55em;
+  padding-left:0.55em;
+  margin:12px 0;
+}
+
+.clue-line{
+  text-align:center;
+  font-size:0.9rem;
+  line-height:1.65;
+  color:var(--ink);
+  animation:course-in 0.5s ease both;
+}
+
+.clue-line .clue-tag{
+  display:block;
+  font-family:'Montserrat',sans-serif;
+  font-size:0.53rem;
+  letter-spacing:0.3em;
+  text-transform:uppercase;
+  color:var(--ink-faint);
+  margin-bottom:4px;
+}
+
+@keyframes course-in{
+  from{opacity:0;transform:translateY(7px)}
+  to{opacity:1;transform:none}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .clue-line{animation:none}
+  *{transition:none !important}
+}
+
+.guess-zone{margin-top:24px}
+
+.gz-label{
+  font-family:'Montserrat',sans-serif;
+  font-size:0.58rem;
+  letter-spacing:0.28em;
+  text-transform:uppercase;
+  color:var(--cream-faint);
+  text-align:center;
+  margin-bottom:14px;
+}
+
+.opt{
+  width:100%;
+  display:flex;
+  align-items:baseline;
+  gap:12px;
+  text-align:left;
+  background:none;
+  border:1px solid var(--line);
+  border-radius:3px;
+  padding:13px 16px;
+  margin-bottom:10px;
+  cursor:pointer;
+  color:var(--cream);
+  transition:border-color 0.15s,background 0.15s;
+}
+
+.opt:hover:not(:disabled){border-color:var(--gold);background:rgba(201,162,46,0.05)}
+
+.opt-letter{
+  font-family:'Cormorant Garamond',serif;
+  font-style:italic;
+  font-weight:600;
+  color:var(--gold);
+  font-size:1rem;
+  min-width:14px;
+}
+
+.opt-dish{font-family:'Cormorant Garamond',serif;font-size:1.15rem;font-weight:500;line-height:1.3}
+
+.opt.struck{border-color:var(--wrong);background:var(--wrong-soft);opacity:0.55;cursor:default}
+.opt.struck .opt-dish{text-decoration:line-through;text-decoration-color:var(--wrong)}
+.opt.hit{border-color:var(--right);background:var(--right-soft)}
+.opt:disabled{cursor:default}
+
+.combo{position:relative}
+
+.combo input{
+  width:100%;
+  background:var(--bg-deep);
+  border:1px solid var(--line);
+  border-radius:3px;
+  color:var(--cream);
+  font-family:'Lora',serif;
+  font-size:0.95rem;
+  padding:13px 15px;
+  outline:none;
+}
+
+.combo input:focus{border-color:var(--gold)}
+.combo input::placeholder{color:var(--cream-faint);font-style:italic}
+
+.combo-list{
+  position:absolute;
+  left:0;right:0;top:calc(100% + 4px);
+  background:var(--bg-deep);
+  border:1px solid var(--line);
+  border-radius:3px;
+  max-height:280px;
+  overflow-y:auto;
+  z-index:30;
+  display:none;
+}
+
+.combo-list.open{display:block}
+
+.combo-item{
+  width:100%;
+  text-align:left;
+  background:none;
+  border:none;
+  border-bottom:1px solid var(--line-soft);
+  padding:11px 14px;
+  cursor:pointer;
+  color:var(--cream);
+}
+
+.combo-item:last-child{border-bottom:none}
+.combo-item:hover,.combo-item.hl{background:rgba(201,162,46,0.09)}
+.combo-item .ci-dish{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:500}
+.combo-item .ci-rest{font-size:0.72rem;color:var(--cream-mid);font-style:italic;margin-top:1px}
+
+.gy{margin-top:18px}
+
+.gy-row{
+  border:1px solid var(--line);
+  border-radius:3px;
+  padding:10px 14px;
+  margin-bottom:8px;
+}
+
+.gy-row.won{border-color:var(--right);background:var(--right-soft)}
+.gy-row.lost{border-color:var(--wrong);background:var(--wrong-soft)}
+
+.gy-guess{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:500}
+.gy-guess .gy-rest{font-style:italic;color:var(--cream-mid);font-size:0.85rem}
+
+.gy-chips{display:flex;gap:6px;margin-top:7px;flex-wrap:wrap}
+
+.chip{
+  font-family:'Montserrat',sans-serif;
+  font-size:0.56rem;
+  letter-spacing:0.14em;
+  text-transform:uppercase;
+  padding:3px 9px;
+  border-radius:2px;
+  border:1px solid var(--line);
+  color:var(--cream-faint);
+}
+
+.chip.match{border-color:var(--right);color:var(--right);background:var(--right-soft)}
+.chip.miss{border-color:var(--wrong);color:var(--wrong);background:var(--wrong-soft)}
+
+.reveal{margin-top:24px}
+
+.verdict{
+  text-align:center;
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.4rem;
+  font-weight:600;
+  font-style:italic;
+  margin-bottom:14px;
+}
+
+.verdict.good{color:var(--right)}
+.verdict.bad{color:var(--wrong)}
+
+.reveal .menu-card{margin-top:0}
+
+.rv-dish{
+  text-align:center;
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.6rem;
+  font-weight:600;
+  font-style:italic;
+  line-height:1.15;
+  margin-bottom:8px;
+}
+
+.rv-at{
+  text-align:center;
+  font-family:'Montserrat',sans-serif;
+  font-size:0.58rem;
+  letter-spacing:0.3em;
+  text-transform:uppercase;
+  color:var(--ink-faint);
+  margin-bottom:6px;
+}
+
+.rv-rest{
+  text-align:center;
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.3rem;
+  font-weight:600;
+  margin-bottom:4px;
+}
+
+.rv-desc{
+  margin-top:14px;
+  padding-top:14px;
+  border-top:1px solid rgba(42,33,24,0.14);
+  font-size:0.85rem;
+  line-height:1.7;
+  font-style:italic;
+  color:var(--ink-mid);
+  text-align:center;
+}
+
+.next-btn,.share-btn,.ghost-btn{
+  display:block;
+  width:100%;
+  border-radius:3px;
+  padding:13px;
+  font-family:'Montserrat',sans-serif;
+  font-size:0.66rem;
+  letter-spacing:0.24em;
+  text-transform:uppercase;
+  cursor:pointer;
+  margin-top:16px;
+  transition:opacity 0.15s,border-color 0.15s,color 0.15s;
+}
+
+.next-btn{background:var(--gold);border:1px solid var(--gold);color:var(--bg-deep);font-weight:600}
+.next-btn:hover{opacity:0.88}
+
+.share-btn{background:none;border:1px solid var(--gold);color:var(--gold-bright)}
+.share-btn:hover{background:rgba(201,162,46,0.08)}
+.share-btn.copied{background:var(--right-soft);border-color:var(--right);color:var(--right)}
+
+.ghost-btn{background:none;border:1px solid var(--line);color:var(--cream-mid)}
+.ghost-btn:hover{border-color:var(--gold);color:var(--gold)}
+
+.summary{margin-top:6px}
+
+.sum-score{
+  text-align:center;
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.9rem;
+  font-weight:600;
+  margin:8px 0 2px;
+}
+
+.sum-line{
+  text-align:center;
+  font-style:italic;
+  color:var(--cream-mid);
+  font-size:0.9rem;
+  margin-bottom:18px;
+}
+
+.sum-rows{margin-bottom:6px}
+
+.sum-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  border-top:1px solid var(--line-soft);
+  padding:11px 4px;
+}
+
+.sum-row:last-child{border-bottom:1px solid var(--line-soft)}
+
+.sr-course{
+  font-family:'Montserrat',sans-serif;
+  font-size:0.58rem;
+  letter-spacing:0.22em;
+  text-transform:uppercase;
+  color:var(--cream-faint);
+}
+
+.sr-dish{font-family:'Cormorant Garamond',serif;font-size:1rem;font-weight:500;flex:1;text-align:center;padding:0 10px}
+.sr-mark{font-family:'Cormorant Garamond',serif;font-size:0.95rem;font-weight:600}
+.sr-mark.good{color:var(--right)}
+.sr-mark.bad{color:var(--wrong)}
+
+.countdown{
+  text-align:center;
+  font-family:'Montserrat',sans-serif;
+  font-size:0.6rem;
+  letter-spacing:0.26em;
+  text-transform:uppercase;
+  color:var(--cream-faint);
+  margin-top:22px;
+}
+
+.countdown span{color:var(--gold-bright)}
+
+.stats-row{
+  display:flex;
+  justify-content:center;
+  gap:34px;
+  margin-top:22px;
+}
+
+.stat{text-align:center}
+
+.stat .sv{
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.7rem;
+  font-weight:600;
+  color:var(--cream);
+}
+
+.stat .sl{
+  font-family:'Montserrat',sans-serif;
+  font-size:0.53rem;
+  letter-spacing:0.2em;
+  text-transform:uppercase;
+  color:var(--cream-faint);
+  margin-top:2px;
+}
+
+.dist{margin-top:20px}
+
+.dist-title{
+  text-align:center;
+  font-family:'Montserrat',sans-serif;
+  font-size:0.56rem;
+  letter-spacing:0.26em;
+  text-transform:uppercase;
+  color:var(--cream-faint);
+  margin-bottom:12px;
+}
+
+.dist-row{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+
+.dist-n{
+  font-family:'Cormorant Garamond',serif;
+  font-weight:600;
+  font-size:0.9rem;
+  color:var(--cream-mid);
+  width:12px;
+  text-align:right;
+}
+
+.dist-bar{
+  height:16px;
+  background:var(--gold-soft);
+  border-radius:2px;
+  min-width:22px;
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  padding:0 7px;
+  font-family:'Montserrat',sans-serif;
+  font-size:0.6rem;
+  color:var(--cream);
+}
+
+.dist-bar.hot{background:var(--gold);color:var(--bg-deep);font-weight:600}
+
+.overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(15,4,6,0.75);
+  display:none;
+  align-items:flex-start;
+  justify-content:center;
+  padding:40px 22px;
+  z-index:100;
+  overflow-y:auto;
+}
+
+.overlay.open{display:flex}
+
+.modal{
+  background:var(--bg);
+  border:1px solid var(--line);
+  border-radius:4px;
+  max-width:480px;
+  width:100%;
+  padding:28px 26px;
+  position:relative;
+}
+
+.modal-close{
+  position:absolute;
+  top:12px;
+  right:14px;
+  background:none;
+  border:none;
+  color:var(--cream-faint);
+  font-size:1.3rem;
+  cursor:pointer;
+  font-family:'Cormorant Garamond',serif;
+}
+
+.modal-close:hover{color:var(--gold)}
+
+.modal h2{
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.5rem;
+  font-weight:600;
+  margin-bottom:14px;
+  text-align:center;
+}
+
+.modal p{font-size:0.85rem;line-height:1.7;color:var(--cream-mid);margin-bottom:12px}
+.modal p b{color:var(--cream);font-weight:500}
+.modal .mode-name{margin-top:16px}
+
+footer{
+  margin-top:60px;
+  text-align:center;
+  font-family:'Montserrat',sans-serif;
+  font-size:0.58rem;
+  letter-spacing:0.22em;
+  text-transform:uppercase;
+  color:var(--cream-faint);
+}
+
+footer a{color:var(--cream-mid);text-decoration:none}
+footer a:hover{color:var(--gold)}
+
+button:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid var(--gold-bright);outline-offset:2px}
+
+@media (max-width:430px){
+  .wrap{padding:0 14px 70px}
+  .menu-card{padding:24px 16px 20px}
+  .stats-row{gap:20px}
+  .wordmark{font-size:1.7rem}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="wordmark">michelindle <span class="stars" id="wmStars"></span></div>
+  <div class="hbtns">
+    <button class="icon-btn" id="helpBtn" aria-label="how to play">?</button>
+    <button class="icon-btn" id="statsBtn" aria-label="statistics">s</button>
+  </div>
+</header>
+
+<hr class="rule">
+<div class="tagline">the daily tasting of starred kitchens</div>
+
+<section class="mode-pick" id="modePick" style="display:none">
+  <div class="mode-title">Tonight's service</div>
+  <div class="mode-sub">Three courses. Three starred kitchens. How will you dine?</div>
+  <button class="mode-card" id="pickNormal">
+    <div class="mode-name">prix fixe</div>
+    <div class="mode-desc">The kitchen sets the menu. See the restaurant, then choose its signature dish from four plates. Three clues, three guesses per course.</div>
+  </button>
+  <button class="mode-card" id="pickHard">
+    <div class="mode-name">&agrave; la carte</div>
+    <div class="mode-desc">No menu, no names. Clues arrive one by one and you must call both the dish and the house it belongs to. Six clues, six guesses per course.</div>
+  </button>
+  <div class="mode-note">your choice is set for the whole service</div>
+</section>
+
+<section id="game" style="display:none">
+  <div class="tabs" id="tabs"></div>
+  <div id="playArea"></div>
+</section>
+
+<section class="summary" id="summary" style="display:none"></section>
+
+<footer><a href="https://lkranz.com">lkranz.com</a> &middot; new service nightly at midnight est</footer>
+</div>
+
+<div class="overlay" id="helpOverlay">
+  <div class="modal">
+    <button class="modal-close" data-close="helpOverlay" aria-label="close">&times;</button>
+    <h2>How to play</h2>
+    <p>Every day the kitchen serves <b>three courses</b>: three real restaurants holding two or three Michelin stars. Your job is to name each one's <b>signature dish</b>.</p>
+    <p>Clues are revealed like courses on a menu. Every wrong guess sends out the next clue. Solve each course in as few guesses as you can.</p>
+    <div class="mode-name">prix fixe</div>
+    <p>You are shown the restaurant. Choose its signature dish from <b>four plates</b>. Three clues, three guesses.</p>
+    <div class="mode-name">&agrave; la carte</div>
+    <p>The restaurant is hidden. Using up to <b>six clues</b>, search the full carte and call both the dish and the house. Wrong guesses tell you whether you matched the country, the course, and the stars.</p>
+    <p>Your mode is locked once the first course begins. A new service starts at midnight EST.</p>
+  </div>
+</div>
+
+<div class="overlay" id="statsOverlay">
+  <div class="modal">
+    <button class="modal-close" data-close="statsOverlay" aria-label="close">&times;</button>
+    <h2>Your table</h2>
+    <div class="stats-row" id="statsRowModal"></div>
+    <div class="dist" id="distModal"></div>
+  </div>
+</div>
+
+<script src="restaurants.js"></script>
+<script src="schedule.js"></script>
+<script>
+const COURSE_LABELS=['amuse-bouche','plat principal',"chef's table"];
+const NORMAL_GUESSES=3;
+const HARD_GUESSES=6;
+const LS='michelindle_';
+
+const byId={};
+RESTAURANTS.forEach(r=>{byId[r.id]=r});
+
+function hashStr(s){
+  let h=1779033703^s.length;
+  for(let i=0;i<s.length;i++){
+    h=Math.imul(h^s.charCodeAt(i),3432918353);
+    h=(h<<13)|(h>>>19);
+  }
+  return function(){
+    h=Math.imul(h^(h>>>16),2246822507);
+    h=Math.imul(h^(h>>>13),3266489909);
+    return (h^=h>>>16)>>>0;
+  };
+}
+
+function mulberry32(a){
+  return function(){
+    a|=0;a=(a+1831565813)|0;
+    let t=Math.imul(a^(a>>>15),1|a);
+    t=(t+Math.imul(t^(t>>>7),61|t))^t;
+    return ((t^(t>>>14))>>>0)/4294967296;
+  };
+}
+
+function seededRng(str){
+  return mulberry32(hashStr(str)());
+}
+
+function nyParts(){
+  const fmt=new Intl.DateTimeFormat('en-US',{timeZone:'America/New_York',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false});
+  const p={};
+  fmt.formatToParts(new Date()).forEach(x=>{p[x.type]=x.value});
+  return p;
+}
+
+function getTodayKey(){
+  const p=nyParts();
+  return p.year+'-'+p.month+'-'+p.day;
+}
+
+function prevKey(key){
+  const d=new Date(key+'T12:00:00Z');
+  d.setUTCDate(d.getUTCDate()-1);
+  return d.toISOString().slice(0,10);
+}
+
+function puzzlesFor(key){
+  if(typeof SCHEDULE!=='undefined'&&SCHEDULE[key]) return SCHEDULE[key];
+  const tiers=[1,2,3].map(f=>RESTAURANTS.filter(r=>r.fame===f).map(r=>r.id));
+  return tiers.map((ids,i)=>{
+    const rng=seededRng(key+'|tier'+(i+1));
+    return ids[Math.floor(rng()*ids.length)];
+  });
+}
+
+function optionsFor(rest,key){
+  const rng=seededRng(key+'|opts|'+rest.id);
+  const pool=RESTAURANTS.filter(r=>r.course===rest.course&&r.id!==rest.id);
+  const decoys=[];
+  const used=new Set();
+  while(decoys.length<3&&used.size<pool.length){
+    const i=Math.floor(rng()*pool.length);
+    if(used.has(i)) continue;
+    used.add(i);
+    decoys.push(pool[i]);
+  }
+  const opts=[rest,...decoys];
+  for(let i=opts.length-1;i>0;i--){
+    const j=Math.floor(rng()*(i+1));
+    [opts[i],opts[j]]=[opts[j],opts[i]];
+  }
+  return opts;
+}
+
+function starWord(n){return n===3?'three stars':'two stars'}
+
+function normalClues(r){
+  return [
+    {tag:'first taste',text:r.dishClue1},
+    {tag:'from the kitchen',text:r.dishClue2},
+    {tag:'the giveaway',text:r.dishClue3}
+  ];
+}
+
+function hardClues(r){
+  return [
+    {tag:'first taste',text:r.dishClue1},
+    {tag:'the house',text:'A '+r.cuisine.toLowerCase()+' kitchen holding '+starWord(r.stars)+'.'},
+    {tag:'from the kitchen',text:r.dishClue2},
+    {tag:'the region',text:'You are dining in '+r.country+'.'},
+    {tag:'the giveaway',text:r.dishClue3},
+    {tag:'the address',text:'The house stands in '+r.city+'.'}
+  ];
+}
+
+function starsSvg(n,size,dim){
+  let s='';
+  for(let i=0;i<n;i++){
+    s+='<svg width="'+size+'" height="'+size+'" viewBox="0 0 940 940" aria-hidden="true" style="margin:0 2px"><path class="star'+(dim?' dim':'')+'" d="M470 40l106 306h324L638 542l100 318-268-196-268 196 100-318L40 346h324z"/></svg>';
+  }
+  return s;
+}
+
+function loadJSON(k,fb){
+  try{const v=localStorage.getItem(LS+k);return v?JSON.parse(v):fb}catch(e){return fb}
+}
+
+function saveJSON(k,v){
+  try{localStorage.setItem(LS+k,JSON.stringify(v))}catch(e){}
+}
+
+const todayKey=getTodayKey();
+const puzzleIds=puzzlesFor(todayKey);
+
+let day=loadJSON('day_'+todayKey,null);
+let stats=loadJSON('stats',{days:0,daysWon:0,streak:0,best:0,lastWonKey:'',roundsPlayed:0,roundsSolved:0,dist:[0,0,0,0,0,0]});
+let activeRound=0;
+
+function freshDay(mode){
+  return {mode:mode,rounds:puzzleIds.map(()=>({guesses:[],solved:false,done:false,counted:false}))};
+}
+
+function maxGuesses(){return day.mode==='hard'?HARD_GUESSES:NORMAL_GUESSES}
+
+function firstUnfinished(){
+  for(let i=0;i<day.rounds.length;i++) if(!day.rounds[i].done) return i;
+  return -1;
+}
+
+function persist(){saveJSON('day_'+todayKey,day)}
+
+function el(id){return document.getElementById(id)}
+
+function show(id){el(id).style.display=''}
+function hide(id){el(id).style.display='none'}
+
+function render(){
+  el('wmStars').innerHTML=starsSvg(3,13,false);
+  if(!day){
+    show('modePick');hide('game');hide('summary');
+    return;
+  }
+  hide('modePick');
+  const fu=firstUnfinished();
+  if(fu===-1&&activeRound===-1){
+    hide('game');
+    renderSummary();
+    return;
+  }
+  show('game');hide('summary');
+  renderTabs();
+  renderRound();
+}
+
+function renderTabs(){
+  const tabs=el('tabs');
+  tabs.innerHTML='';
+  const fu=firstUnfinished();
+  day.rounds.forEach((r,i)=>{
+    const b=document.createElement('button');
+    b.className='tab'+(i===activeRound?' active':'')+(r.done?(r.solved?' done-won':' done-lost'):'');
+    const locked=!r.done&&fu!==-1&&i>fu;
+    b.disabled=locked;
+    let st='&nbsp;';
+    if(r.done) st=r.solved?'solved':'missed';
+    else if(i===fu) st='serving';
+    b.innerHTML=COURSE_LABELS[i]+'<span class="tstat">'+st+'</span>';
+    b.addEventListener('click',()=>{activeRound=i;render()});
+    tabs.appendChild(b);
+  });
+}
+
+function currentRest(){return byId[puzzleIds[activeRound]]}
+
+function renderRound(){
+  const area=el('playArea');
+  const r=currentRest();
+  const st=day.rounds[activeRound];
+  const hard=day.mode==='hard';
+  const clues=hard?hardClues(r):normalClues(r);
+  const shown=Math.min(st.guesses.length+1,clues.length);
+  let html='';
+  html+='<div class="menu-card'+(hard&&!st.done?' mystery':'')+'">';
+  if(hard&&!st.done){
+    html+='<div class="mc-eyebrow">table myst&egrave;re</div>';
+    html+='<div class="mc-stars">'+starsSvg(3,15,true)+'</div>';
+    html+='<div class="mc-name">&mdash;</div>';
+    html+='<div class="mc-loc">identity withheld</div>';
+  }else{
+    html+='<div class="mc-eyebrow">'+(st.done?'the answer':'the restaurant')+'</div>';
+    html+='<div class="mc-stars">'+starsSvg(r.stars,15,false)+'</div>';
+    html+='<div class="mc-name">'+r.name+'</div>';
+    html+='<div class="mc-loc">'+r.city+' &middot; '+r.country+'</div>';
+    html+='<div class="mc-chef">'+r.chef+' &middot; '+r.cuisine+'</div>';
+  }
+  html+='<div class="clue-zone">';
+  const showCount=st.done?clues.length:shown;
+  for(let i=0;i<showCount;i++){
+    html+='<div class="clue-sep">&middot;&nbsp;&middot;&nbsp;&middot;</div>';
+    html+='<div class="clue-line"><span class="clue-tag">'+clues[i].tag+'</span>'+clues[i].text+'</div>';
+  }
+  html+='</div></div>';
+  if(!st.done){
+    html+='<div class="guess-zone">';
+    if(hard){
+      html+='<div class="gz-label">guess '+(st.guesses.length+1)+' of '+HARD_GUESSES+' &middot; name the dish and the house</div>';
+      html+='<div class="combo"><input type="text" id="comboInput" placeholder="Search the carte..." autocomplete="off"><div class="combo-list" id="comboList"></div></div>';
+      html+=renderHistory(r,st);
+    }else{
+      html+='<div class="gz-label">guess '+(st.guesses.length+1)+' of '+NORMAL_GUESSES+' &middot; which is the signature dish</div>';
+      const opts=optionsFor(r,todayKey);
+      opts.forEach((o,i)=>{
+        const struck=st.guesses.includes(o.id);
+        html+='<button class="opt'+(struck?' struck':'')+'" data-oid="'+o.id+'"'+(struck?' disabled':'')+'><span class="opt-letter">'+String.fromCharCode(97+i)+'.</span><span class="opt-dish">'+o.dish+'</span></button>';
+      });
+    }
+    html+='</div>';
+  }else{
+    html+='<div class="reveal">';
+    html+='<div class="verdict '+(st.solved?'good':'bad')+'">'+(st.solved?verdictLine(st.guesses.length):'The course goes back to the kitchen.')+'</div>';
+    if(day.mode==='hard'||!st.solved){
+      html+='<div class="menu-card"><div class="mc-eyebrow">le plat</div><div class="rv-dish">'+r.dish+'</div><div class="rv-at">as served at</div><div class="rv-rest">'+r.name+'</div><div class="mc-stars">'+starsSvg(r.stars,13,false)+'</div><div class="mc-loc">'+r.city+' &middot; '+r.country+'</div><div class="mc-chef">'+r.chef+' &middot; '+r.cuisine+'</div><div class="rv-desc">'+r.dishClue3+'</div></div>';
+    }else{
+      html+='<div class="menu-card"><div class="mc-eyebrow">le plat</div><div class="rv-dish">'+r.dish+'</div><div class="rv-desc">'+r.dishClue3+'</div></div>';
+    }
+    const fu=firstUnfinished();
+    if(fu!==-1) html+='<button class="next-btn" id="nextBtn">next course: '+COURSE_LABELS[fu]+'</button>';
+    else html+='<button class="next-btn" id="nextBtn">the full tasting</button>';
+    html+='</div>';
+  }
+  area.innerHTML=html;
+  if(!st.done){
+    if(hard) wireCombo(r,st);
+    else area.querySelectorAll('.opt:not(:disabled)').forEach(b=>{
+      b.addEventListener('click',()=>guess(parseInt(b.dataset.oid,10)));
+    });
+  }else{
+    el('nextBtn').addEventListener('click',()=>{
+      const fu=firstUnfinished();
+      if(fu!==-1){activeRound=fu;render()}
+      else{activeRound=-1;render()}
+    });
+  }
+}
+
+function verdictLine(n){
+  if(n===1) return 'Flawless. First taste.';
+  if(n===2) return 'Superb palate.';
+  if(n===3) return 'Well earned.';
+  return 'Got there in the end.';
+}
+
+function renderHistory(r,st){
+  if(!st.guesses.length) return '';
+  let html='<div class="gy">';
+  for(let i=st.guesses.length-1;i>=0;i--){
+    const g=byId[st.guesses[i]];
+    if(!g) continue;
+    html+='<div class="gy-row lost"><div class="gy-guess">'+g.dish+' <span class="gy-rest">&mdash; '+g.name+'</span></div><div class="gy-chips">';
+    html+='<span class="chip '+(g.country===r.country?'match':'miss')+'">'+g.country+'</span>';
+    html+='<span class="chip '+(g.course===r.course?'match':'miss')+'">'+g.course.replace('-',' / ')+'</span>';
+    html+='<span class="chip '+(g.stars===r.stars?'match':'miss')+'">'+starWord(g.stars)+'</span>';
+    html+='</div></div>';
+  }
+  html+='</div>';
+  return html;
+}
+
+function wireCombo(r,st){
+  const input=el('comboInput');
+  const list=el('comboList');
+  let hl=-1;
+  let items=[];
+  function refresh(){
+    const q=input.value.trim().toLowerCase();
+    if(!q){list.classList.remove('open');list.innerHTML='';hl=-1;return}
+    items=RESTAURANTS.filter(x=>!st.guesses.includes(x.id)&&(x.dish.toLowerCase().includes(q)||x.name.toLowerCase().includes(q)||x.city.toLowerCase().includes(q)||x.country.toLowerCase().includes(q))).slice(0,10);
+    if(!items.length){list.classList.remove('open');list.innerHTML='';hl=-1;return}
+    list.innerHTML=items.map((x,i)=>'<button class="combo-item" data-i="'+i+'"><div class="ci-dish">'+x.dish+'</div><div class="ci-rest">'+x.name+' &middot; '+x.city+'</div></button>').join('');
+    list.classList.add('open');
+    hl=-1;
+    list.querySelectorAll('.combo-item').forEach(b=>{
+      b.addEventListener('click',()=>guess(items[parseInt(b.dataset.i,10)].id));
+    });
+  }
+  input.addEventListener('input',refresh);
+  input.addEventListener('keydown',e=>{
+    const opts=list.querySelectorAll('.combo-item');
+    if(e.key==='ArrowDown'&&opts.length){e.preventDefault();hl=Math.min(hl+1,opts.length-1);mark(opts)}
+    else if(e.key==='ArrowUp'&&opts.length){e.preventDefault();hl=Math.max(hl-1,0);mark(opts)}
+    else if(e.key==='Enter'&&hl>=0&&items[hl]){e.preventDefault();guess(items[hl].id)}
+  });
+  function mark(opts){opts.forEach((o,i)=>o.classList.toggle('hl',i===hl))}
+  input.focus();
+}
+
+function guess(id){
+  const st=day.rounds[activeRound];
+  const r=currentRest();
+  if(st.done||st.guesses.includes(id)) return;
+  st.guesses.push(id);
+  if(id===r.id){
+    st.solved=true;
+    st.done=true;
+  }else if(st.guesses.length>=maxGuesses()){
+    st.done=true;
+  }
+  if(st.done&&!st.counted){
+    st.counted=true;
+    stats.roundsPlayed++;
+    if(st.solved){
+      stats.roundsSolved++;
+      stats.dist[Math.min(st.guesses.length,6)-1]++;
+    }
+    if(firstUnfinished()===-1) finishDay();
+    saveJSON('stats',stats);
+  }
+  persist();
+  renderRound();
+  renderTabs();
+}
+
+function finishDay(){
+  const solved=day.rounds.filter(x=>x.solved).length;
+  stats.days++;
+  const won=solved>=2;
+  if(won){
+    stats.daysWon++;
+    stats.streak=(stats.lastWonKey===prevKey(todayKey))?stats.streak+1:1;
+    stats.lastWonKey=todayKey;
+    if(stats.streak>stats.best) stats.best=stats.streak;
+  }else{
+    stats.streak=0;
+  }
+}
+
+function renderSummary(){
+  const s=el('summary');
+  const solved=day.rounds.filter(x=>x.solved).length;
+  let html='<div class="mode-title">Service complete</div>';
+  html+='<div class="sum-score">'+solved+' / 3</div>';
+  html+='<div class="sum-line">'+sumLine(solved)+'</div>';
+  html+='<div class="sum-rows">';
+  day.rounds.forEach((st,i)=>{
+    const r=byId[puzzleIds[i]];
+    html+='<div class="sum-row"><span class="sr-course">'+COURSE_LABELS[i]+'</span><span class="sr-dish">'+r.dish+'</span><span class="sr-mark '+(st.solved?'good':'bad')+'">'+(st.solved?st.guesses.length+'/'+maxGuesses():'x/'+maxGuesses())+'</span></div>';
+  });
+  html+='</div>';
+  html+='<button class="share-btn" id="shareBtn">copy results</button>';
+  html+='<button class="ghost-btn" id="reviewBtn">review the courses</button>';
+  html+='<div class="stats-row" id="statsRowSum"></div>';
+  html+='<div class="countdown">next service in <span id="cd">--:--:--</span></div>';
+  s.innerHTML=html;
+  show('summary');
+  el('shareBtn').addEventListener('click',()=>{
+    navigator.clipboard.writeText(shareText()).then(()=>{
+      const b=el('shareBtn');
+      b.textContent='copied to clipboard';
+      b.classList.add('copied');
+      setTimeout(()=>{b.textContent='copy results';b.classList.remove('copied')},1800);
+    });
+  });
+  el('reviewBtn').addEventListener('click',()=>{activeRound=0;render()});
+  renderStatsRow(el('statsRowSum'));
+  tickCountdown();
+}
+
+function sumLine(n){
+  if(n===3) return 'A perfect tasting. The kitchen salutes you.';
+  if(n===2) return 'A fine evening at the table.';
+  if(n===1) return 'One course landed. The carte is cruel.';
+  return 'The kitchen wins tonight.';
+}
+
+function renderStatsRow(node){
+  const sr=stats.roundsPlayed?Math.round(stats.roundsSolved/stats.roundsPlayed*100):0;
+  node.innerHTML='<div class="stat"><div class="sv">'+stats.days+'</div><div class="sl">services</div></div>'+
+  '<div class="stat"><div class="sv">'+sr+'%</div><div class="sl">courses solved</div></div>'+
+  '<div class="stat"><div class="sv">'+stats.streak+'</div><div class="sl">streak</div></div>'+
+  '<div class="stat"><div class="sv">'+stats.best+'</div><div class="sl">best</div></div>';
+}
+
+function renderDist(node){
+  const max=Math.max(1,...stats.dist);
+  let html='<div class="dist-title">solved at guess</div>';
+  for(let i=0;i<6;i++){
+    const v=stats.dist[i];
+    html+='<div class="dist-row"><span class="dist-n">'+(i+1)+'</span><div class="dist-bar'+(v===max&&v>0?' hot':'')+'" style="width:'+Math.max(8,Math.round(v/max*100))+'%">'+(v||'')+'</div></div>';
+  }
+  node.innerHTML=html;
+}
+
+function shareText(){
+  const dp=todayKey.split('-');
+  const solved=day.rounds.filter(x=>x.solved).length;
+  const modeName=day.mode==='hard'?'\u00e0 la carte':'prix fixe';
+  let text='michelindle '+dp[1]+'/'+dp[2]+' \u00b7 '+modeName+' \u00b7 '+solved+'/3\n';
+  const slots=maxGuesses();
+  day.rounds.forEach(st=>{
+    let row='';
+    for(let i=0;i<slots;i++){
+      if(st.guesses[i]===undefined) row+='\u2B1B';
+      else if(st.solved&&i===st.guesses.length-1) row+=(i===0?'\u2B50':'\uD83D\uDFE9');
+      else row+='\uD83D\uDFE5';
+    }
+    text+=row+'\n';
+  });
+  text+='https://lkranz.com/michelindle';
+  return text;
+}
+
+function tickCountdown(){
+  const node=el('cd');
+  if(!node) return;
+  const p=nyParts();
+  const secs=(23-parseInt(p.hour,10))*3600+(59-parseInt(p.minute,10))*60+(60-parseInt(p.second,10));
+  const h=Math.floor(secs/3600),m=Math.floor((secs%3600)/60),sc=secs%60;
+  node.textContent=String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(sc).padStart(2,'0');
+  setTimeout(tickCountdown,1000);
+}
+
+el('pickNormal').addEventListener('click',()=>{startDay('normal')});
+el('pickHard').addEventListener('click',()=>{startDay('hard')});
+
+function startDay(mode){
+  day=freshDay(mode);
+  persist();
+  activeRound=0;
+  render();
+}
+
+el('helpBtn').addEventListener('click',()=>{el('helpOverlay').classList.add('open')});
+el('statsBtn').addEventListener('click',()=>{
+  renderStatsRow(el('statsRowModal'));
+  renderDist(el('distModal'));
+  el('statsOverlay').classList.add('open');
+});
+
+document.querySelectorAll('.modal-close').forEach(b=>{
+  b.addEventListener('click',()=>el(b.dataset.close).classList.remove('open'));
+});
+
+document.querySelectorAll('.overlay').forEach(o=>{
+  o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open')});
+});
+
+if(!loadJSON('seen_help',false)){
+  saveJSON('seen_help',true);
+  el('helpOverlay').classList.add('open');
+}
+
+if(day){
+  const fu=firstUnfinished();
+  activeRound=fu===-1?-1:fu;
+}
+render();
+</script>
+</body>
+</html>
