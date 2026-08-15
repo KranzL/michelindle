@@ -12,6 +12,7 @@ Static site -- zero backend, zero build step. Two JS data files + one HTML file.
 | restaurants.js | Restaurant bank: name, location, stars, chef, cuisine, fame tier, signature dish, course bucket, three graded dish clues |
 | schedule.js | Date-to-restaurant-ID mapping, three IDs per day (one per fame tier) |
 | images/{id}.jpg | Photograph of each signature dish, keyed by restaurant ID. The primary hint. |
+| images/sources.txt | Tab-separated id and source URL for every downloaded photograph, for review and replacement. |
 
 ## Game Modes
 
