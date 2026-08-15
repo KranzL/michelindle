@@ -849,17 +849,17 @@ function puzzlesFor(key){
   });
 }
 
+function decoyScore(r,rest){
+  let shared=0;
+  if(r.tags&&rest.tags) shared=r.tags.filter(t=>rest.tags.includes(t)).length;
+  return shared*2+(r.course===rest.course?1:0);
+}
+
 function optionsFor(rest,key){
   const rng=seededRng(key+'|opts|'+rest.id);
-  const pool=RESTAURANTS.filter(r=>r.course===rest.course&&r.id!==rest.id);
-  const decoys=[];
-  const used=new Set();
-  while(decoys.length<3&&used.size<pool.length){
-    const i=Math.floor(rng()*pool.length);
-    if(used.has(i)) continue;
-    used.add(i);
-    decoys.push(pool[i]);
-  }
+  const pool=RESTAURANTS.filter(r=>r.id!==rest.id).map(r=>({r:r,score:decoyScore(r,rest),jitter:rng()}));
+  pool.sort((a,b)=>b.score-a.score||a.jitter-b.jitter);
+  const decoys=pool.slice(0,3).map(x=>x.r);
   const opts=[rest,...decoys];
   for(let i=opts.length-1;i>0;i--){
     const j=Math.floor(rng()*(i+1));

@@ -55,7 +55,9 @@ A day counts as won when at least 2 of 3 rounds are solved. Streak requires cons
 }
 ```
 
-`course` is one of: seafood, meat, poultry, vegetable, dessert, soup, pasta-rice, egg-caviar. Multiple-choice decoys are drawn from the same course bucket, seeded by date + restaurant ID so every player sees the same four options.
+`course` is one of: seafood, meat, poultry, vegetable, dessert, soup, pasta-rice, egg-caviar. Each entry also carries `tags`, an array of visible ingredient and form families (truffle, caviar-roe, lobster, pasta, fried, theatrical, ...).
+
+Multiple-choice decoys are drawn in tiers so the photograph cannot single out the answer by name: first dishes sharing a tag AND course (another truffle soup), then any shared tag, then same course, then anything. Selection is seeded by date + restaurant ID so every player sees the same four options.
 
 ## Hint Structure
 
